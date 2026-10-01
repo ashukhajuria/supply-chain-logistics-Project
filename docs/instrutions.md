@@ -64,9 +64,33 @@ We need to query the database
 - Security group > attach the security while creating ec2 instance
 - Launch instance
 - SSH using .pem file from your system
-- install the docker
+- install the docker and run the mssql container
 - 
+
+# Update system packages
+sudo apt update && sudo apt upgrade -y
+
+# Install Docker and its prerequisites
+sudo apt install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Add your user to the docker group (avoids needing sudo for docker commands)
+sudo usermod -aG docker $USER
+newgrp docker
 ```
+
+Execute below command to pull and run sql server 
+
 docker run -v mssql_data:/var/opt/mssql \
   -e "ACCEPT_EULA=Y" \
   -e "MSSQL_SA_PASSWORD=FdeEnterprisePass123!" \
@@ -74,7 +98,10 @@ docker run -v mssql_data:/var/opt/mssql \
   --name legacy-mssql \
   -d mcr.microsoft.com/mssql/server:2022-latest
 ```
-- copy the ip address of the ec2 (public)
+- copy the ip address of the ec2 (public) and port information in mSsql server connection in extension.
+
+
+
 
 # Phase 1
 
